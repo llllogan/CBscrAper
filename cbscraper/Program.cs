@@ -9,15 +9,12 @@ internal static class Program
 {
     public static async Task Main(string[] _)
     {
-        bool headless = false;
 
-        await using var browser = await BrowserFactory.CreateAsync(headless);
-        var scraper            = new CodifyScraper(browser);
+        bool headed = true;
 
-        var content = await scraper.ScrapeHomeAsync();
+        await using var browser = await BrowserFactory.CreateAsync(headless: !headed);
+        await using var scraper  = await BankScraper.CreateAsync(browser, headed);
 
-        Console.WriteLine($"Page title: {content.Title}");
-        foreach (var h in content.Headings)
-            Console.WriteLine($"Heading   : {h}");
+        await scraper.LogOnAsync();
     }
 }
